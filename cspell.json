@@ -1,0 +1,17 @@
+{
+	"version": "0.2",
+	"language": "en,es",
+	"words": [
+		"ducco",
+		"github",
+		"godotenv",
+		"gorm",
+		"joho",
+		"labstack",
+		"microservicio",
+		"mysql",
+		"Mysql",
+		"MYSQL"
+	],
+	"flagWords": []
+}
