@@ -11,7 +11,8 @@
 		"microservicio",
 		"mysql",
 		"Mysql",
-		"MYSQL"
+		"MYSQL",
+		"paginación"
 	],
 	"flagWords": []
 }

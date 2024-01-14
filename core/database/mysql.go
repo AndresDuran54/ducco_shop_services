@@ -2,6 +2,7 @@ package database
 
 import (
 	"ducco/core/utils"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
@@ -20,32 +21,76 @@ func (o *MYSQL) ItemDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
 
 func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
 
-	var resultFind *gorm.DB
+	//+ Definimos la tabla a consultar
+	itemsFind := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
+	itemsTotalFind := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
 
-	if itemsDBIn.BuildWhere != nil {
-		whereStatement, whereStatementValues := o.BuildWhere(itemsDBIn.BuildWhere)
-
-		resultFind = o.gormDB.Table(itemsDBIn.TableName).Unscoped().Order(clause.OrderByColumn{
+	//+ Si se mando una configuración de orden
+	if itemsDBIn.OrderBy != nil {
+		itemsFind = itemsFind.Order(clause.OrderByColumn{
 			Column: clause.Column{Name: itemsDBIn.OrderBy.Column},
 			Desc:   itemsDBIn.OrderBy.Desc,
-		}).Limit(itemsDBIn.Last).Offset(itemsDBIn.Offset).Where(
-			whereStatement,
-			whereStatementValues...,
-		).Find(&itemsDBIn.Items)
-	} else {
-		resultFind = o.gormDB.Table(itemsDBIn.TableName).Unscoped().Order(clause.OrderByColumn{
-			Column: clause.Column{Name: itemsDBIn.OrderBy.Column},
-			Desc:   itemsDBIn.OrderBy.Desc,
-		}).Limit(itemsDBIn.Last).Offset(itemsDBIn.Offset).Find(&itemsDBIn.Items)
+		})
 	}
 
-	if resultFind.Error != nil {
-		return resultFind.Error, ItemsDBOut{}
+	//+ Si se mando una configuración de paginado
+	if itemsDBIn.Offset != nil && itemsDBIn.Last != nil {
+		itemsFind = itemsFind.Offset((*itemsDBIn.Offset - 1) * *itemsDBIn.Last).Limit(*itemsDBIn.Last)
+	}
+
+	//+ Si se mando una configuración de construcción de WHERE
+	if itemsDBIn.BuildWhere != nil {
+		//+ Obtenemos las sentencias condicionales
+		whereStatement, whereStatementValues := o.BuildWhere(itemsDBIn.BuildWhere)
+
+		//+ Obtenemos los items con paginación
+		itemsFind = itemsFind.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+
+		//+ Obtenemos los items sin paginación
+		itemsTotalFind = itemsTotalFind.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+	}
+
+	//+ Agregamos los filters
+	if itemsDBIn.FiltersVals != nil && *itemsDBIn.FiltersVals != "" && len(itemsDBIn.Filters) > 0 {
+		whereStatement, whereStatementValues := o.BuildFilters(itemsDBIn.Filters, *itemsDBIn.FiltersVals)
+
+		//+ Obtenemos los items con paginación
+		itemsFind = itemsFind.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+
+		//+ Obtenemos los items sin paginación
+		itemsTotalFind = itemsTotalFind.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+	}
+
+	//+ Obtenemos el itemsCounterTotal
+	itemsTotal := itemsDBIn.Items
+	itemsTotalFind.Find(&itemsTotal)
+
+	//+ Realizamos la consulta
+	itemsFind.Find(&itemsDBIn.Items)
+
+	//+ En caso de error
+	if itemsFind.Error != nil {
+		return itemsFind.Error, ItemsDBOut{}
 	}
 
 	return nil, ItemsDBOut{
-		Items:        itemsDBIn.Items,
-		ItemsCounter: reflect.ValueOf(itemsDBIn.Items).Len(),
+		Data: ItemDBDataOut{
+			Items:             itemsDBIn.Items,
+			ItemsCounter:      reflect.ValueOf(itemsDBIn.Items).Len(),
+			ItemsCounterTotal: reflect.ValueOf(itemsTotal).Len(),
+		},
 	}
 }
 
@@ -87,7 +132,6 @@ func (o *MYSQL) BuildWhere(i interface{}) (string, []interface{}) {
 			//+ Actuamos según el pattern
 			switch pattern {
 			case "<>", "<", ">", "=":
-				fmt.Println("pattern " + pattern)
 				//+ Verificamos que sea un puntero string o un string, o un puntero a algún entero o un entero en sí
 				if elemKind != reflect.String && !(elemKind >= reflect.Int && elemKind <= reflect.Uint64) {
 					continue
@@ -139,6 +183,74 @@ func (o *MYSQL) BuildWhere(i interface{}) (string, []interface{}) {
 				whereStatementValues = append(whereStatementValues, val)
 
 			}
+		}
+	}
+
+	return strings.Join(whereStatement, " AND "), whereStatementValues
+}
+
+func (o *MYSQL) BuildFilters(filters map[string]Filter, filtersVals string) (string, []interface{}) {
+	var whereStatement []string
+	var whereStatementValues []interface{}
+
+	var filtersArray = []FilterVals{}
+
+	err := json.Unmarshal([]byte(filtersVals), &filtersArray)
+
+	if err != nil {
+		return "", []interface{}{}
+	}
+
+	for _, filter := range filtersArray {
+
+		//+ Si no existe el filtro saltamos la iteración
+		if filters[filter.Filter].Column == "" || filters[filter.Filter].Pattern == "" {
+			continue
+		}
+
+		//+ Variable para almacenar el valor de la variable
+		var val, val2 string
+
+		switch filters[filter.Filter].Pattern {
+		case EqualPattern, NotEqualPattern, LikePattern, InPattern, GreaterThanPattern, GreaterThanOrEqualPattern, LessThanPattern, LessThanOrEqualPattern:
+
+			//+ Obtenemos el valor del campo
+			val = fmt.Sprintf("%v", filter.Val)
+
+			//+ Si el campo está vació saltamos la siguiente iteración
+			if val == "" {
+				continue
+			}
+
+			//+ Agregamos la sentencia where
+			whereStatement = append(whereStatement, fmt.Sprintf("%v %v ?", filters[filter.Filter].Column, filters[filter.Filter].Pattern))
+
+			//+ Agregamos el valor de la sentencia
+			whereStatementValues = append(whereStatementValues, val)
+		case BetweenPattern:
+
+			//+ Obtenemos el valor del campo
+			val = fmt.Sprintf("%v", filter.Val)
+
+			//+ Obtenemos el valor del campo
+			val2 = fmt.Sprintf("%v", filter.Val2)
+
+			//+ Si el campo está vació saltamos la siguiente iteración
+			if val == "" {
+				continue
+			}
+
+			//+ Si el campo está vació saltamos la siguiente iteración
+			if val2 == "" {
+				continue
+			}
+
+			//+ Agregamos la sentencia where
+			whereStatement = append(whereStatement, fmt.Sprintf("%v %v ? AND ?", filters[filter.Filter].Column, filters[filter.Filter].Pattern))
+
+			//+ Agregamos el valor de la sentencia
+			whereStatementValues = append(whereStatementValues, val)
+			whereStatementValues = append(whereStatementValues, val2)
 		}
 	}
 

@@ -1,26 +1,30 @@
 package products
 
-import (
-	"gorm.io/gorm"
-)
-
 type Product struct {
-	gorm.Model         `gorm:"table:Products"`
-	ProductId          *string `gorm:"column:productId"`
-	Name               *string `gorm:"column:name"`
-	Description        *string `gorm:"column:description"`
-	NameFO             *string `gorm:"column:nameFO"`
-	DescriptionFO      *string `gorm:"column:descriptionFO"`
-	ImageUrlCardFO     *string `gorm:"column:imageUrlCardFO"`
-	DetailDocIdFO      *string `gorm:"column:detailDocIdFO"`
-	DetailImagesUrlsFO *string `gorm:"column:detailImagesUrlsFO"`
-	Stock              *uint32 `gorm:"column:stock"`
-	Price              *uint32 `gorm:"column:price"`
-	InsTimestamp       *uint64 `gorm:"column:insTimestamp"`
+	ProductId          *uint32 `gorm:"column:productId" json:"productId"`
+	Name               *string `gorm:"column:name" json:"name"`
+	Description        *string `gorm:"column:description" json:"description"`
+	NameFO             *string `gorm:"column:nameFO" json:"nameFO"`
+	DescriptionFO      *string `gorm:"column:descriptionFO" json:"descriptionFO"`
+	ImageUrlCardFO     *string `gorm:"column:imageUrlCardFO" json:"imageUrlCardFO"`
+	DetailDocIdFO      *string `gorm:"column:detailDocIdFO" json:"detailDocIdFO"`
+	DetailImagesUrlsFO *string `gorm:"column:detailImagesUrlsFO" json:"detailImagesUrlsFO"`
+	Stock              *uint32 `gorm:"column:stock" json:"stock"`
+	Price              *uint32 `gorm:"column:price" json:"price"`
+	InsTimestamp       *uint64 `gorm:"column:insTimestamp" json:"insTimestamp"`
 }
 
 type ItemsDBIn struct {
-	StockGTE *uint32 `pattern:">" column:"stock"`
+	StockGTE     *uint32 `pattern:">" column:"stock"`
+	OrderCol     *string
+	Order        *string
+	FilterVals   *string
+	OrderVals    *string
+	EnablePaging *bool
+	PagingSize   *int
+	PagingIndex  *int
+	Label        string
+	Trace        string
 }
 
 type ProductsWhere struct {

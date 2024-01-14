@@ -5,11 +5,25 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 const (
 	MY_SQL = iota
 	MONGO_DB
+)
+
+//+ PATTERNS
+const (
+	EqualPattern              string = `=`
+	NotEqualPattern           string = `!=`
+	LikePattern               string = `LIKE`
+	BetweenPattern            string = `BETWEEN`
+	InPattern                 string = `IN`
+	GreaterThanPattern        string = `>`
+	GreaterThanOrEqualPattern string = `>=`
+	LessThanPattern           string = `<`
+	LessThanOrEqualPattern    string = `<=`
 )
 
 type IDatabase interface {
@@ -24,22 +38,40 @@ type Database struct {
 }
 
 type ItemsDBIn struct {
-	Items      interface{}
-	Offset     int
-	Last       int
-	TableName  string
-	OrderBy    OrderBy
-	BuildWhere interface{}
+	Items       interface{}
+	Offset      *int
+	Last        *int
+	TableName   string
+	OrderBy     *OrderBy
+	BuildWhere  interface{}
+	FiltersVals *string
+	Filters     map[string]Filter
 }
 
 type ItemsDBOut struct {
-	Items        interface{}
-	ItemsCounter int
+	Data ItemDBDataOut `json:"data"`
+}
+
+type ItemDBDataOut struct {
+	Items             interface{} `json:"items"`
+	ItemsCounter      int         `json:"itemsCounter"`
+	ItemsCounterTotal int         `json:"itemsCounterTotal"`
 }
 
 type OrderBy struct {
 	Column string
 	Desc   bool
+}
+
+type Filter struct {
+	Column  string
+	Pattern string
+}
+
+type FilterVals struct {
+	Filter string `json:"filter"`
+	Val    string `json:"val"`
+	Val2   string `json:"val2"`
 }
 
 type NewDatabaseIn struct {
@@ -77,7 +109,9 @@ func newDatabaseMYSQL(newDatabaseIn NewDatabaseIn) (IDatabase, error) {
 	var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", newDatabaseIn.User, newDatabaseIn.Pass, newDatabaseIn.Host, newDatabaseIn.Port, newDatabaseIn.Name)
 
 	//+ Obtenemos la conexión
-	gormDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	gormDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	if err != nil {
 		return nil, err

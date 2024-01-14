@@ -3,6 +3,7 @@ package products
 import (
 	"net/http"
 
+	"ducco/microservices/ducco_products/bind"
 	"ducco/microservices/ducco_products/repository/products"
 
 	"github.com/labstack/echo/v4"
@@ -10,12 +11,23 @@ import (
 
 type Handler struct{}
 
-func (o Handler) ItemsCustomer(c echo.Context) error {
+func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error {
+	//+ Obtenemos la data de la consulta
+	data := itemsCustomer.(*bind.ItemsCustomer)
+
+	//+ Instancia del repository de los productos
 	productsData := products.Data{}
 
-	var StockGTE uint32 = 10
+	var stockGTE uint32 = 5
+	//+ Obtenemos los productos
+	productsResultDB := productsData.ItemsDB(products.ItemsDBIn{
+		PagingSize:  data.PagingSize,
+		PagingIndex: data.PagingIndex,
+		FilterVals:  data.Filters,
+		StockGTE:    &stockGTE,
+	})
 
-	return c.JSON(http.StatusOK, productsData.ItemsDB(products.ItemsDBIn{
-		StockGTE: &StockGTE,
-	}))
+	//+ Pipe
+	productsResultDB.Data.Items = ItemsCustomer(productsResultDB.Data.Items.([]products.Product))
+	return c.JSON(http.StatusOK, productsResultDB)
 }
