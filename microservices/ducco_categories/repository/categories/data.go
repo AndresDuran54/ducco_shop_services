@@ -1,12 +1,12 @@
-package products
+package categories
 
 import (
 	"ducco/core/database"
-	"ducco/microservices/ducco_products/lib"
+	"ducco/microservices/ducco_categories/lib"
 )
 
-const TableName = "Products"
-const columnPK = "productId"
+const TableName = "Categories"
+const columnPK = "categoryId"
 
 func Filters() map[string]database.Filter {
 	return map[string]database.Filter{
@@ -14,12 +14,8 @@ func Filters() map[string]database.Filter {
 			Column:  "insTimestamp",
 			Pattern: database.BetweenPattern,
 		},
-		"inventoryStockGTE": {
-			Column:  "inventoryStock",
-			Pattern: database.GreaterThanPattern,
-		},
-		"categoryId": {
-			Column:  "categoryId",
+		"cardShowFO": {
+			Column:  "cardShowFO",
 			Pattern: database.EqualPattern,
 		},
 	}
@@ -27,11 +23,8 @@ func Filters() map[string]database.Filter {
 
 func Orders() map[string]database.Order {
 	return map[string]database.Order{
-		"inventorySalesQuantity": {
-			Column: "inventorySalesQuantity",
-		},
-		"inventoryStock": {
-			Column: "inventoryStock",
+		"cardOrderFO": {
+			Column: "cardOrderFO",
 		},
 	}
 }
@@ -39,11 +32,11 @@ func Orders() map[string]database.Order {
 type Data struct{}
 
 func (o Data) ItemsDB(itemsDBIn ItemsDBIn) database.ItemsDBOut {
-	var products []Product
+	var categories []Category
 
 	//+ Obtenemos los productos
-	productsResult := lib.MYSQL.ItemsDB(database.ItemsDBIn{
-		Items:       products,
+	categoriesResult := lib.MYSQL.ItemsDB(database.ItemsDBIn{
+		Items:       categories,
 		Last:        itemsDBIn.PagingSize,
 		Offset:      itemsDBIn.PagingIndex,
 		Filters:     Filters(),
@@ -53,5 +46,5 @@ func (o Data) ItemsDB(itemsDBIn ItemsDBIn) database.ItemsDBOut {
 		TableName:   TableName,
 	})
 
-	return productsResult
+	return categoriesResult
 }

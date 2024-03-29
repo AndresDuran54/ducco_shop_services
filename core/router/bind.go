@@ -13,3 +13,12 @@ type HeadersCredentialsFiltersPaging struct {
 	PagingSize  *int    `header:"paging_size"`
 	Filters     *string `header:"filters"`
 }
+
+type HeadersCredentialsFiltersPagingOrder struct {
+	CustomerId  *int    `header:"customer_id"`
+	Token       *string `header:"token"`
+	PagingIndex *int    `header:"paging_index"`
+	PagingSize  *int    `header:"paging_size"`
+	Filters     *string `header:"filters"`
+	Orders      *string `header:"orders"`
+}

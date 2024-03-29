@@ -19,7 +19,7 @@ func (o *MYSQL) ItemDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
 	return nil, ItemsDBOut{}
 }
 
-func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
+func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 
 	//+ Definimos la tabla a consultar
 	itemsFind := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
@@ -73,6 +73,23 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
 		)
 	}
 
+	//+ Agregamos los orders
+	if itemsDBIn.OrdersVals != nil && *itemsDBIn.OrdersVals != "" && len(itemsDBIn.Orders) > 0 {
+		var ordersVals = []OrderVals{}
+		err := json.Unmarshal([]byte(*itemsDBIn.OrdersVals), &ordersVals)
+		fmt.Println(ordersVals)
+
+		if err == nil {
+			for _, orderVal := range ordersVals {
+				fmt.Println(itemsDBIn.Orders[orderVal.Order])
+				itemsFind = itemsFind.Order(clause.OrderByColumn{
+					Column: clause.Column{Name: orderVal.Order},
+					Desc:   orderVal.Val == "desc",
+				})
+			}
+		}
+	}
+
 	//+ Obtenemos el itemsCounterTotal
 	itemsTotal := itemsDBIn.Items
 	itemsTotalFind.Find(&itemsTotal)
@@ -82,10 +99,10 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
 
 	//+ En caso de error
 	if itemsFind.Error != nil {
-		return itemsFind.Error, ItemsDBOut{}
+		panic(itemsFind.Error.Error())
 	}
 
-	return nil, ItemsDBOut{
+	return ItemsDBOut{
 		Data: ItemDBDataOut{
 			Items:             itemsDBIn.Items,
 			ItemsCounter:      reflect.ValueOf(itemsDBIn.Items).Len(),

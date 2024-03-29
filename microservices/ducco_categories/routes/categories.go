@@ -2,15 +2,30 @@ package routes
 
 import (
 	"ducco/core/conflicts"
+	"ducco/microservices/ducco_categories/bind"
+	c "ducco/microservices/ducco_categories/config"
+	handler "ducco/microservices/ducco_categories/controller/categories"
+	"ducco/microservices/ducco_categories/lib"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-func LoadRoutes(e *echo.Echo) {
-	//+ Cargamos las rutas de los productos
-	loadRoutesProducts(e)
-	loadRoutesCategories(e)
+func loadRoutesCategories(e *echo.Echo) {
+	//+ Subject del paquete de rutas
+	prefix := "/" + c.AppInfo.Version + "/" + "categories"
+
+	//+ Handler
+	handler := handler.Handler{}
+
+	e.GET(prefix, func(c echo.Context) error {
+		return Request(RequestIn[bind.ItemsCustomer]{
+			c:           c,
+			requestData: &bind.ItemsCustomer{},
+			bindFunc:    lib.Bind{}.Bind,
+			handlerFunc: handler.ItemsCustomer,
+		})
+	})
 }
 
 func Request[T any](requestIn RequestIn[T]) error {

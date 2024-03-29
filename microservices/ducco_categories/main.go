@@ -1,10 +1,10 @@
 package main
 
 import (
-	c "ducco/microservices/ducco_products/config"
+	c "ducco/microservices/ducco_categories/config"
 	"fmt"
 
-	r "ducco/microservices/ducco_products/routes"
+	r "ducco/microservices/ducco_categories/routes"
 
 	"github.com/labstack/echo/v4"
 )

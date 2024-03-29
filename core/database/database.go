@@ -28,7 +28,7 @@ const (
 
 type IDatabase interface {
 	ItemDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut)
-	ItemsDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut)
+	ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut
 	NewItemDB() (error, interface{})
 	UpdateItemDB() (error, interface{})
 	BuildWhere(i interface{}) (string, []interface{})
@@ -46,6 +46,8 @@ type ItemsDBIn struct {
 	BuildWhere  interface{}
 	FiltersVals *string
 	Filters     map[string]Filter
+	OrdersVals  *string
+	Orders      map[string]Order
 }
 
 type ItemsDBOut struct {
@@ -68,10 +70,20 @@ type Filter struct {
 	Pattern string
 }
 
+type Order struct {
+	Column string
+	Order  string
+}
+
 type FilterVals struct {
 	Filter string `json:"filter"`
 	Val    string `json:"val"`
 	Val2   string `json:"val2"`
+}
+
+type OrderVals struct {
+	Order string `json:"order"`
+	Val   string `json:"val"`
 }
 
 type NewDatabaseIn struct {

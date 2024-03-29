@@ -3,8 +3,8 @@ package products
 import (
 	"net/http"
 
-	"ducco/microservices/ducco_products/bind"
-	"ducco/microservices/ducco_products/repository/products"
+	"ducco/microservices/ducco_categories/bind"
+	"ducco/microservices/ducco_categories/repository/categories"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,10 +16,10 @@ func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error 
 	data := itemsCustomer.(*bind.ItemsCustomer)
 
 	//+ Instancia del repository de los productos
-	productsData := products.Data{}
+	categoriesData := categories.Data{}
 
 	//+ Obtenemos los productos
-	productsResultDB := productsData.ItemsDB(products.ItemsDBIn{
+	categoriesResultDB := categoriesData.ItemsDB(categories.ItemsDBIn{
 		PagingSize:  data.PagingSize,
 		PagingIndex: data.PagingIndex,
 		FilterVals:  data.Filters,
@@ -27,6 +27,6 @@ func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error 
 	})
 
 	//+ Pipe
-	productsResultDB.Data.Items = ItemsCustomer(productsResultDB.Data.Items.([]products.Product))
-	return c.JSON(http.StatusOK, productsResultDB)
+	categoriesResultDB.Data.Items = ItemsCustomer(categoriesResultDB.Data.Items.([]categories.Category))
+	return c.JSON(http.StatusOK, categoriesResultDB)
 }
