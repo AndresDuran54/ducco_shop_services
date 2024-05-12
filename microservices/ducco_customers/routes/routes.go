@@ -9,8 +9,8 @@ import (
 
 func LoadRoutes(e *echo.Echo) {
 	//+ Cargamos las rutas de los productos
-	loadRoutesProducts(e)
-	loadRoutesCategories(e)
+	loadRoutesCustomers(e)
+	loadRoutesSession(e)
 }
 
 func Request[T any](requestIn RequestIn[T]) error {
@@ -34,11 +34,16 @@ func Request[T any](requestIn RequestIn[T]) error {
 		})
 	}
 
+	if requestIn.useGuard {
+		requestIn.guardFunc(requestIn.c)
+	}
+
 	return requestIn.handlerFunc(requestIn.c, requestIn.requestData)
 }
 
 type RequestIn[T any] struct {
 	c           echo.Context
+	useGuard    bool
 	requestData *T
 	guardFunc   func(c echo.Context) error
 	bindFunc    func(c echo.Context, bindModel interface{}) error

@@ -1,0 +1,16 @@
+package conflicts
+
+var ERR_SESSIONS_PASSWORDS_NOT_MATCH = ErrorConflicts{
+	MessageId: "ERR_SESSIONS_PASSWORDS_NOT_MATCH",
+	Message:   "ERR_SESSIONS_PASSWORDS_NOT_MATCH",
+}
+
+var ERR_SESSIONS_NOT_FOUND = ErrorConflicts{
+	MessageId: "ERR_SESSIONS_NOT_FOUND",
+	Message:   "ERR_SESSIONS_NOT_FOUND",
+}
+
+var ERR_SESSIONS_NOT_ACTIVE = ErrorConflicts{
+	MessageId: "ERR_SESSIONS_NOT_ACTIVE",
+	Message:   "ERR_SESSIONS_NOT_ACTIVE",
+}

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"ducco/core/conflicts"
 	"ducco/core/utils"
 	"encoding/json"
 	"fmt"
@@ -15,19 +16,43 @@ type MYSQL struct {
 	gormDB *gorm.DB
 }
 
-func (o *MYSQL) ItemDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut) {
-	return nil, ItemsDBOut{}
+func (o *MYSQL) ItemDB(itemDBIn ItemDBIn) ItemDBOut {
+
+	//+ Definimos la tabla a consultar
+	itemFindDB := o.gormDB.Table(itemDBIn.TableName).Unscoped()
+
+	//+ Si se mando una configuración de construcción de WHERE
+	if itemDBIn.BuildWhere != nil {
+		//+ Obtenemos las sentencias condicionales
+		whereStatement, whereStatementValues := o.BuildWhere(itemDBIn.BuildWhere)
+
+		//+ Agregamos la sentencia where
+		itemFindDB.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+	}
+
+	//+ Obtenemos el registro
+	itemDB := itemFindDB.First(itemDBIn.Item)
+
+	return ItemDBOut{
+		Data: ItemDBDataOut{
+			ItemFound: itemDB.RowsAffected > 0,
+			Item:      itemDBIn.Item,
+		},
+	}
 }
 
 func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 
 	//+ Definimos la tabla a consultar
-	itemsFind := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
-	itemsTotalFind := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
+	itemsFindDB := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
+	itemsTotalFindDB := o.gormDB.Table(itemsDBIn.TableName).Unscoped()
 
 	//+ Si se mando una configuración de orden
 	if itemsDBIn.OrderBy != nil {
-		itemsFind = itemsFind.Order(clause.OrderByColumn{
+		itemsFindDB = itemsFindDB.Order(clause.OrderByColumn{
 			Column: clause.Column{Name: itemsDBIn.OrderBy.Column},
 			Desc:   itemsDBIn.OrderBy.Desc,
 		})
@@ -35,7 +60,7 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 
 	//+ Si se mando una configuración de paginado
 	if itemsDBIn.Offset != nil && itemsDBIn.Last != nil {
-		itemsFind = itemsFind.Offset((*itemsDBIn.Offset - 1) * *itemsDBIn.Last).Limit(*itemsDBIn.Last)
+		itemsFindDB = itemsFindDB.Offset((*itemsDBIn.Offset - 1) * *itemsDBIn.Last).Limit(*itemsDBIn.Last)
 	}
 
 	//+ Si se mando una configuración de construcción de WHERE
@@ -44,13 +69,13 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 		whereStatement, whereStatementValues := o.BuildWhere(itemsDBIn.BuildWhere)
 
 		//+ Obtenemos los items con paginación
-		itemsFind = itemsFind.Where(
+		itemsFindDB = itemsFindDB.Where(
 			whereStatement,
 			whereStatementValues...,
 		)
 
 		//+ Obtenemos los items sin paginación
-		itemsTotalFind = itemsTotalFind.Where(
+		itemsTotalFindDB = itemsTotalFindDB.Where(
 			whereStatement,
 			whereStatementValues...,
 		)
@@ -61,13 +86,13 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 		whereStatement, whereStatementValues := o.BuildFilters(itemsDBIn.Filters, *itemsDBIn.FiltersVals)
 
 		//+ Obtenemos los items con paginación
-		itemsFind = itemsFind.Where(
+		itemsFindDB = itemsFindDB.Where(
 			whereStatement,
 			whereStatementValues...,
 		)
 
 		//+ Obtenemos los items sin paginación
-		itemsTotalFind = itemsTotalFind.Where(
+		itemsTotalFindDB = itemsTotalFindDB.Where(
 			whereStatement,
 			whereStatementValues...,
 		)
@@ -77,12 +102,10 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 	if itemsDBIn.OrdersVals != nil && *itemsDBIn.OrdersVals != "" && len(itemsDBIn.Orders) > 0 {
 		var ordersVals = []OrderVals{}
 		err := json.Unmarshal([]byte(*itemsDBIn.OrdersVals), &ordersVals)
-		fmt.Println(ordersVals)
 
 		if err == nil {
 			for _, orderVal := range ordersVals {
-				fmt.Println(itemsDBIn.Orders[orderVal.Order])
-				itemsFind = itemsFind.Order(clause.OrderByColumn{
+				itemsFindDB = itemsFindDB.Order(clause.OrderByColumn{
 					Column: clause.Column{Name: orderVal.Order},
 					Desc:   orderVal.Val == "desc",
 				})
@@ -92,18 +115,18 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 
 	//+ Obtenemos el itemsCounterTotal
 	itemsTotal := itemsDBIn.Items
-	itemsTotalFind.Find(&itemsTotal)
+	itemsTotalFindDB.Find(&itemsTotal)
 
 	//+ Realizamos la consulta
-	itemsFind.Find(&itemsDBIn.Items)
+	itemsFindDB.Find(&itemsDBIn.Items)
 
 	//+ En caso de error
-	if itemsFind.Error != nil {
-		panic(itemsFind.Error.Error())
+	if itemsFindDB.Error != nil {
+		panic(itemsFindDB.Error.Error())
 	}
 
 	return ItemsDBOut{
-		Data: ItemDBDataOut{
+		Data: ItemsDBDataOut{
 			Items:             itemsDBIn.Items,
 			ItemsCounter:      reflect.ValueOf(itemsDBIn.Items).Len(),
 			ItemsCounterTotal: reflect.ValueOf(itemsTotal).Len(),
@@ -111,14 +134,64 @@ func (o *MYSQL) ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut {
 	}
 }
 
-func (o *MYSQL) NewItemDB() (error, interface{}) {
+func (o *MYSQL) NewItemDB(newItemDBIn NewItemDBIn) NewItemDBOut {
+
+	//+ Definimos la tabla a usar
+	newItemDB := o.gormDB.Table(newItemDBIn.TableName).Unscoped()
+
+	//+ Ingresamos el registro en base de datos
+	newItemResult := newItemDB.Create(newItemDBIn.Item)
+
+	if newItemResult.Error != nil {
+		panic(conflicts.ErrorConflicts{
+			MessageId: conflicts.ERR_INTERNAL_SERVER_ERROR.MessageId,
+			Message:   newItemDB.Error.Error(),
+		})
+	}
+
+	return NewItemDBOut{
+		Data: NewItemDBDataOut{
+			Item: newItemDBIn.Item,
+		},
+	}
+}
+
+func (o *MYSQL) UpdateItemDB() (interface{}, error) {
 
 	return nil, nil
 }
 
-func (o *MYSQL) UpdateItemDB() (error, interface{}) {
+func (o *MYSQL) UpdateItemsDB(updateItemsDBIn UpdateItemsDBIn) UpdateItemsDBOut {
+	//+ Definimos la tabla a usar
+	updateItemsDB := o.gormDB.Table(updateItemsDBIn.TableName).Unscoped()
 
-	return nil, nil
+	//+ Si se mando una configuración de construcción de WHERE
+	if updateItemsDBIn.BuildWhere != nil {
+		//+ Obtenemos las sentencias condicionales
+		whereStatement, whereStatementValues := o.BuildWhere(updateItemsDBIn.BuildWhere)
+
+		//+ Agregamos la sentencia where
+		updateItemsDB = updateItemsDB.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+	}
+
+	//+ Ingresamos el registro en base de datos
+	updateItemsResult := updateItemsDB.Updates(updateItemsDBIn.Data)
+
+	if updateItemsResult.Error != nil {
+		panic(conflicts.ErrorConflicts{
+			MessageId: conflicts.ERR_INTERNAL_SERVER_ERROR.MessageId,
+			Message:   updateItemsDB.Error.Error(),
+		})
+	}
+
+	return UpdateItemsDBOut{
+		Data: UpdateItemsDBDataOut{
+			Item: updateItemsDBIn.Data,
+		},
+	}
 }
 
 func (o *MYSQL) BuildWhere(i interface{}) (string, []interface{}) {
@@ -229,7 +302,21 @@ func (o *MYSQL) BuildFilters(filters map[string]Filter, filtersVals string) (str
 		var val, val2 string
 
 		switch filters[filter.Filter].Pattern {
-		case EqualPattern, NotEqualPattern, LikePattern, InPattern, GreaterThanPattern, GreaterThanOrEqualPattern, LessThanPattern, LessThanOrEqualPattern:
+		case InPattern:
+			//+ Obtenemos el valor del campo
+			val = fmt.Sprintf("%v", filter.Val)
+
+			//+ Si el campo está vació saltamos la siguiente iteración
+			if val == "" {
+				continue
+			}
+
+			//+ Agregamos la sentencia where
+			whereStatement = append(whereStatement, fmt.Sprintf("%v %v (?)", filters[filter.Filter].Column, filters[filter.Filter].Pattern))
+
+			//+ Agregamos el valor de la sentencia
+			whereStatementValues = append(whereStatementValues, val)
+		case EqualPattern, NotEqualPattern, LikePattern, GreaterThanPattern, GreaterThanOrEqualPattern, LessThanPattern, LessThanOrEqualPattern:
 
 			//+ Obtenemos el valor del campo
 			val = fmt.Sprintf("%v", filter.Val)

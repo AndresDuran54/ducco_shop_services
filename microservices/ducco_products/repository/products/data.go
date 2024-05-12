@@ -22,6 +22,14 @@ func Filters() map[string]database.Filter {
 			Column:  "categoryId",
 			Pattern: database.EqualPattern,
 		},
+		"brandIdIn": {
+			Column:  "brandId",
+			Pattern: database.InPattern,
+		},
+		"inventoryPriceBetween": {
+			Column:  "inventoryPrice",
+			Pattern: database.BetweenPattern,
+		},
 	}
 }
 
@@ -32,6 +40,9 @@ func Orders() map[string]database.Order {
 		},
 		"inventoryStock": {
 			Column: "inventoryStock",
+		},
+		"inventoryPrice": {
+			Column: "inventoryPrice",
 		},
 	}
 }

@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"net/http"
 
 	"ducco/microservices/ducco_products/bind"
@@ -25,7 +26,7 @@ func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error 
 		FilterVals:  data.Filters,
 		OrderVals:   data.Orders,
 	})
-
+	fmt.Println(*data.Orders)
 	//+ Pipe
 	productsResultDB.Data.Items = ItemsCustomer(productsResultDB.Data.Items.([]products.Product))
 	return c.JSON(http.StatusOK, productsResultDB)

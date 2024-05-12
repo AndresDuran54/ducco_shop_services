@@ -27,15 +27,35 @@ const (
 )
 
 type IDatabase interface {
-	ItemDB(itemsDBIn ItemsDBIn) (error, ItemsDBOut)
+	ItemDB(itemDBIn ItemDBIn) ItemDBOut
 	ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut
-	NewItemDB() (error, interface{})
-	UpdateItemDB() (error, interface{})
+	NewItemDB(newItemDBIn NewItemDBIn) NewItemDBOut
+	UpdateItemDB() (interface{}, error)
+	UpdateItemsDB(updateItemsDBIn UpdateItemsDBIn) UpdateItemsDBOut
 	BuildWhere(i interface{}) (string, []interface{})
 }
 
 type Database struct {
 }
+
+//+ +++++++++ ItemDB +++++++++
+
+type ItemDBIn struct {
+	Item       interface{}
+	TableName  string
+	BuildWhere interface{}
+}
+
+type ItemDBOut struct {
+	Data ItemDBDataOut `json:"data"`
+}
+
+type ItemDBDataOut struct {
+	ItemFound bool        `json:"itemFound"`
+	Item      interface{} `json:"item"`
+}
+
+//+ +++++++++ ItemsDB +++++++++
 
 type ItemsDBIn struct {
 	Items       interface{}
@@ -51,13 +71,44 @@ type ItemsDBIn struct {
 }
 
 type ItemsDBOut struct {
-	Data ItemDBDataOut `json:"data"`
+	Data ItemsDBDataOut `json:"data"`
 }
 
-type ItemDBDataOut struct {
+type ItemsDBDataOut struct {
 	Items             interface{} `json:"items"`
 	ItemsCounter      int         `json:"itemsCounter"`
 	ItemsCounterTotal int         `json:"itemsCounterTotal"`
+}
+
+//+ +++++++++ NewItemDB +++++++++
+
+type NewItemDBIn struct {
+	Item      interface{}
+	TableName string
+}
+
+type NewItemDBOut struct {
+	Data NewItemDBDataOut `json:"data"`
+}
+
+type NewItemDBDataOut struct {
+	Item interface{} `json:"item"`
+}
+
+//+ +++++++++ UpdateItemsDB +++++++++
+
+type UpdateItemsDBIn struct {
+	Data       interface{}
+	BuildWhere interface{}
+	TableName  string
+}
+
+type UpdateItemsDBOut struct {
+	Data UpdateItemsDBDataOut `json:"data"`
+}
+
+type UpdateItemsDBDataOut struct {
+	Item interface{} `json:"item"`
 }
 
 type OrderBy struct {

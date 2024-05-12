@@ -8,6 +8,8 @@ type Category struct {
 	CardImgUrlFO   *string `gorm:"column:cardImgUrlFO" json:"cardImgUrlFO"`
 	CardShowFO     *uint8  `gorm:"column:cardShowFO" json:"cardShowFO"`
 	CardOrderFO    *uint8  `gorm:"column:cardOrderFO" json:"cardOrderFO"`
+	CardFiltersFO  *string `gorm:"column:cardFiltersFO" json:"cardFiltersFO"`
+	CardOrdersFO   *string `gorm:"column:cardOrdersFO" json:"cardOrdersFO"`
 	InsTimestamp   *uint64 `gorm:"column:insTimestamp" json:"insTimestamp"`
 }
 
