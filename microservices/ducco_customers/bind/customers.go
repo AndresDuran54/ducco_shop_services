@@ -7,7 +7,7 @@ type ItemsCustomer struct {
 	router.HeadersCredentialsFiltersPagingOrder
 }
 
-type NewCustomer struct {
+type CustomersNew struct {
 	FirstName         *string `json:"firstName"`
 	LastName          *string `json:"lastName"`
 	IdentId           *string `json:"identId"`
@@ -16,4 +16,10 @@ type NewCustomer struct {
 	Password          *string `json:"password"`
 	Phone             *string `json:"phoneNumber"`
 	BirthdayTimestamp *uint64 `json:"birthdayTimestamp"`
+}
+
+//+ INTERSERVICES
+type CustomersSearchItemInterSVC struct {
+	router.HeadersCredentialsInterSVC
+	CustomerId *uint32 `json:"customerId"`
 }

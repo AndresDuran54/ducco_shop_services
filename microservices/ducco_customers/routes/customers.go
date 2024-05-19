@@ -28,11 +28,21 @@ func loadRoutesCustomers(e *echo.Echo) {
 
 	//+ Crear un nuevo cliente
 	e.POST(prefix, func(c echo.Context) error {
-		return Request(RequestIn[bind.NewCustomer]{
+		return Request(RequestIn[bind.CustomersNew]{
 			c:           c,
-			requestData: &bind.NewCustomer{},
+			requestData: &bind.CustomersNew{},
 			bindFunc:    lib.Bind{}.Bind,
-			handlerFunc: handler.NewCustomer,
+			handlerFunc: handler.CustomersNew,
+		})
+	})
+
+	//+
+	e.POST(prefix+"/search-item/interservices", func(c echo.Context) error {
+		return Request(RequestIn[bind.CustomersSearchItemInterSVC]{
+			c:           c,
+			requestData: &bind.CustomersSearchItemInterSVC{},
+			bindFunc:    lib.Bind{}.Bind,
+			handlerFunc: handler.CustomersSearchItemInterSVC,
 		})
 	})
 }

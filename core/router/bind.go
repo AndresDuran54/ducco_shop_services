@@ -6,6 +6,14 @@ type HeaderFilter struct {
 	Val2   *string `json:"val2"`
 }
 
+type HeadersCredentials struct {
+	Token *string `header:"token"`
+}
+
+type HeadersCredentialsInterSVC struct {
+	Token *string `header:"token"`
+}
+
 type HeadersCredentialsFiltersPaging struct {
 	CustomerId  *int    `header:"customer_id"`
 	Token       *string `header:"token"`
@@ -15,7 +23,6 @@ type HeadersCredentialsFiltersPaging struct {
 }
 
 type HeadersCredentialsFiltersPagingOrder struct {
-	CustomerId  *int    `header:"customer_id"`
 	Token       *string `header:"token"`
 	PagingIndex *int    `header:"paging_index"`
 	PagingSize  *int    `header:"paging_size"`

@@ -103,7 +103,7 @@ func (o Handler) SessionsTokenInfo(c echo.Context, sessionTokenInfoData interfac
 	//+ Obtenemos la data de la consulta
 	data := sessionTokenInfoData.(*bind.SessionsTokenInfo)
 
-	//+ Verificamos si la sesisón existe
+	//+ Verificamos si la sesión existe
 	sessionsData := sessions.Data{}
 
 	//+ Instancia del repository de los customers
@@ -149,6 +149,63 @@ func (o Handler) SessionsTokenInfo(c echo.Context, sessionTokenInfoData interfac
 
 	//+ Pipe
 	return c.JSON(http.StatusOK, SessionTokenInfo(
+		*customer,
+		*session,
+	))
+}
+
+//+ INTERSERVICES
+func (o Handler) SessionsCustomerValidateInterSVC(c echo.Context, sessionValidateData interface{}) error {
+
+	//+ Obtenemos la data de la consulta
+	data := sessionValidateData.(*bind.SessionsCustomerValidateInterSVC)
+
+	//+ Verificamos si la sesión existe
+	sessionsData := sessions.Data{}
+
+	//+ Instancia del repository de los customers
+	customersData := customers.Data{}
+
+	//+ Obtenemos el registro de la sesión
+	sessionResult := sessionsData.ItemDB(sessions.ItemDBIn{
+		Token: data.Token,
+	})
+
+	if !sessionResult.Data.ItemFound {
+		conflicts.Conflict(conflicts.ConflictData{
+			MessageId: conflicts.ERR_SESSIONS_NOT_FOUND.MessageId,
+			Message:   conflicts.ERR_SESSIONS_NOT_FOUND.Message,
+		})
+	}
+
+	//+ Registro de la sesión
+	session := sessionResult.Data.Item.(*sessions.Sessions)
+
+	//+ Verificamos si la sesión este activa
+	if *session.Status == config.Etc.Sessions.SessionsStatus.Inactive {
+		conflicts.Conflict(conflicts.ConflictData{
+			MessageId: conflicts.ERR_SESSIONS_NOT_ACTIVE.MessageId,
+			Message:   conflicts.ERR_SESSIONS_NOT_ACTIVE.Message,
+		})
+	}
+
+	//+ Obtenemos el cliente por el customerId
+	customerResult := customersData.ItemDB(customers.ItemDBIn{
+		CustomerId: session.CustomerId,
+	})
+
+	if !customerResult.Data.ItemFound {
+		conflicts.Conflict(conflicts.ConflictData{
+			MessageId: conflicts.ERR_CUSTOMER_NOT_FOUND.MessageId,
+			Message:   conflicts.ERR_CUSTOMER_NOT_FOUND.Message,
+		})
+	}
+
+	//+ Registro del cliente
+	customer := customerResult.Data.Item.(*customers.Customers)
+
+	//+ Pipe
+	return c.JSON(http.StatusOK, SessionCustomerValidateInterSVC(
 		*customer,
 		*session,
 	))

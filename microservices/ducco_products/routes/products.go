@@ -24,4 +24,15 @@ func loadRoutesProducts(e *echo.Echo) {
 			handlerFunc: handler.ItemsCustomer,
 		})
 	})
+
+	//+ INTERSERVICES
+	e.POST(prefix+"/search-item/interservices", func(c echo.Context) error {
+		return Request(RequestIn[bind.ProductInterSVC]{
+			c:           c,
+			requestData: &bind.ProductInterSVC{},
+			bindFunc:    lib.Bind{}.Bind,
+			handlerFunc: handler.ProductInterSVC,
+		})
+	})
+
 }

@@ -20,6 +20,16 @@ type Product struct {
 	InsTimestamp           *uint64 `gorm:"column:insTimestamp" json:"insTimestamp"`
 }
 
+type BuildWhere struct {
+	ProductId *uint32 `db:"productId" pattern:"="`
+}
+
+type ItemDBIn struct {
+	ProductId *uint32 `column:"productId" pattern:">"`
+	Label     string
+	Trace     string
+}
+
 type ItemsDBIn struct {
 	StockGTE     *uint32 `pattern:">" column:"stock"`
 	OrderCol     *string

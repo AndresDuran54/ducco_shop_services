@@ -30,7 +30,7 @@ type IDatabase interface {
 	ItemDB(itemDBIn ItemDBIn) ItemDBOut
 	ItemsDB(itemsDBIn ItemsDBIn) ItemsDBOut
 	NewItemDB(newItemDBIn NewItemDBIn) NewItemDBOut
-	UpdateItemDB() (interface{}, error)
+	UpdateItemDB(updateItemDBIn UpdateItemDBIn) UpdateItemDBOut
 	UpdateItemsDB(updateItemsDBIn UpdateItemsDBIn) UpdateItemsDBOut
 	BuildWhere(i interface{}) (string, []interface{})
 }
@@ -108,6 +108,21 @@ type UpdateItemsDBOut struct {
 }
 
 type UpdateItemsDBDataOut struct {
+	Item interface{} `json:"item"`
+}
+
+//+ +++++++++ UpdateItemDB +++++++++
+type UpdateItemDBIn struct {
+	Data       interface{}
+	BuildWhere interface{}
+	TableName  string
+}
+
+type UpdateItemDBOut struct {
+	Data UpdateItemDBDataOut `json:"data"`
+}
+
+type UpdateItemDBDataOut struct {
 	Item interface{} `json:"item"`
 }
 

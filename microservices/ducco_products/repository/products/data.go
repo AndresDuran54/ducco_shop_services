@@ -49,6 +49,22 @@ func Orders() map[string]database.Order {
 
 type Data struct{}
 
+func (o Data) ItemDB(itemsDBIn ItemDBIn) database.ItemDBOut {
+	//+ Construcción del where
+	buildWhere := BuildWhere{
+		ProductId: itemsDBIn.ProductId,
+	}
+
+	//+ Obtenemos el registro del producto
+	productResult := lib.MYSQL.ItemDB(database.ItemDBIn{
+		Item:       &Product{},
+		BuildWhere: buildWhere,
+		TableName:  TableName,
+	})
+
+	return productResult
+}
+
 func (o Data) ItemsDB(itemsDBIn ItemsDBIn) database.ItemsDBOut {
 	var products []Product
 

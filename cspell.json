@@ -2,18 +2,21 @@
 	"version": "0.2",
 	"language": "en,es",
 	"words": [
+		"Alives",
 		"dgrijalva",
 		"ducco",
 		"github",
 		"godotenv",
 		"gorm",
+		"interservices",
 		"joho",
 		"labstack",
 		"microservicio",
 		"mysql",
 		"Mysql",
 		"MYSQL",
-		"paginación"
+		"paginación",
+		"Parseamos"
 	],
 	"flagWords": []
 }

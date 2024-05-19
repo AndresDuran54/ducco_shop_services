@@ -156,9 +156,37 @@ func (o *MYSQL) NewItemDB(newItemDBIn NewItemDBIn) NewItemDBOut {
 	}
 }
 
-func (o *MYSQL) UpdateItemDB() (interface{}, error) {
+func (o *MYSQL) UpdateItemDB(updateItemDBIn UpdateItemDBIn) UpdateItemDBOut {
+	//+ Definimos la tabla a usar
+	updateItemsDB := o.gormDB.Table(updateItemDBIn.TableName).Unscoped()
 
-	return nil, nil
+	//+ Si se mando una configuración de construcción de WHERE
+	if updateItemDBIn.BuildWhere != nil {
+		//+ Obtenemos las sentencias condicionales
+		whereStatement, whereStatementValues := o.BuildWhere(updateItemDBIn.BuildWhere)
+
+		//+ Agregamos la sentencia where
+		updateItemsDB = updateItemsDB.Where(
+			whereStatement,
+			whereStatementValues...,
+		)
+	}
+
+	//+ Ingresamos el registro en base de datos
+	updateItemsResult := updateItemsDB.Updates(updateItemDBIn.Data)
+
+	if updateItemsResult.Error != nil {
+		panic(conflicts.ErrorConflicts{
+			MessageId: conflicts.ERR_INTERNAL_SERVER_ERROR.MessageId,
+			Message:   updateItemsDB.Error.Error(),
+		})
+	}
+
+	return UpdateItemDBOut{
+		Data: UpdateItemDBDataOut{
+			Item: updateItemDBIn.Data,
+		},
+	}
 }
 
 func (o *MYSQL) UpdateItemsDB(updateItemsDBIn UpdateItemsDBIn) UpdateItemsDBOut {

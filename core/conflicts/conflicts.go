@@ -7,3 +7,7 @@ func Conflict(conflictData ConflictData) {
 func InternalServerError(internalServerErrorData InternalServerErrorData) {
 	panic(internalServerErrorData)
 }
+
+func UnauthorizedError(unauthorizedErrorData UnauthorizedErrorData) {
+	panic(unauthorizedErrorData)
+}

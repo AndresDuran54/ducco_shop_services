@@ -8,3 +8,8 @@ type SessionsLogin struct {
 type SessionsTokenInfo struct {
 	Token *string `header:"token"`
 }
+
+//+ INTERSERVICES
+type SessionsCustomerValidateInterSVC struct {
+	Token *string `header:"token"`
+}

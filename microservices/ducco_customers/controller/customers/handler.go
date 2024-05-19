@@ -34,10 +34,10 @@ func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error 
 	return c.JSON(http.StatusOK, customersResultDB)
 }
 
-func (o Handler) NewCustomer(c echo.Context, itemsCustomer interface{}) error {
+func (o Handler) CustomersNew(c echo.Context, itemsCustomer interface{}) error {
 
 	//+ Obtenemos la data de la consulta
-	data := itemsCustomer.(*bind.NewCustomer)
+	data := itemsCustomer.(*bind.CustomersNew)
 
 	//+ Instancia del repository de los productos
 	customersData := customers.Data{}
@@ -142,4 +142,20 @@ func (o Handler) NewCustomer(c echo.Context, itemsCustomer interface{}) error {
 
 	//+ Pipe
 	return c.JSON(http.StatusOK, CustomerNewItem(*customer, *session))
+}
+
+func (o Handler) CustomersSearchItemInterSVC(c echo.Context, customerSearchItemData interface{}) error {
+	//+ Obtenemos la data de la consulta
+	data := customerSearchItemData.(*bind.CustomersSearchItemInterSVC)
+
+	//+ Instancia del repository de los customers
+	customersData := customers.Data{}
+
+	//+ Obtenemos el registro del cliente
+	customerResultDB := customersData.ItemDB(customers.ItemDBIn{
+		CustomerId: data.CustomerId,
+	})
+
+	//+ Pipe
+	return c.JSON(http.StatusOK, customerResultDB)
 }

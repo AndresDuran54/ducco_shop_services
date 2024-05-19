@@ -1,4 +1,4 @@
-package customers
+package wallet
 
 import (
 	"ducco/microservices/ducco_customers/repository/customers"
@@ -32,22 +32,6 @@ type SessionTokenInfoPipe struct {
 
 func SessionTokenInfo(customer customers.Customers, session sessions.Sessions) ResponsePipe {
 	sessionsPipe := SessionTokenInfoPipe{
-		Customer: customer,
-		Session:  session,
-	}
-
-	return ResponsePipe{
-		Data: sessionsPipe,
-	}
-}
-
-type SessionCustomerValidatePipe struct {
-	Customer customers.Customers `json:"customer"`
-	Session  sessions.Sessions   `json:"item"`
-}
-
-func SessionCustomerValidateInterSVC(customer customers.Customers, session sessions.Sessions) ResponsePipe {
-	sessionsPipe := SessionCustomerValidatePipe{
 		Customer: customer,
 		Session:  session,
 	}

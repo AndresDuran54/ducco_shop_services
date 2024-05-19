@@ -35,4 +35,16 @@ func loadRoutesSession(e *echo.Echo) {
 			handlerFunc: handler.SessionsTokenInfo,
 		})
 	})
+
+	//+ INTERSERVICES
+
+	//+ Validar sesión del customer
+	e.POST(prefix+"/customer-validate/interservices", func(c echo.Context) error {
+		return Request(RequestIn[bind.SessionsCustomerValidateInterSVC]{
+			c:           c,
+			requestData: &bind.SessionsCustomerValidateInterSVC{},
+			bindFunc:    lib.Bind{}.Bind,
+			handlerFunc: handler.SessionsCustomerValidateInterSVC,
+		})
+	})
 }
