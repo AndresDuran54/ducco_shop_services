@@ -48,11 +48,13 @@ func Request[T any](requestIn RequestIn[T]) error {
 						Message:   err_.Error(),
 					},
 				}
+			case "conflicts.ConflictData":
+				errorData = conflicts.ErrorData{
+					Data: err,
+				}
 			}
 
-			return requestIn.RequestDataIn.C.JSON(httpError, conflicts.ErrorData{
-				Data: errorData,
-			})
+			return requestIn.RequestDataIn.C.JSON(httpError, errorData)
 		}
 		return nil
 	}()

@@ -14,6 +14,13 @@ func init() {
 				Pending:   4,
 			},
 		},
+		Parameters: Parameters{
+			ParametersTypes: ParametersTypes{
+				Number: 0,
+				String: 1,
+				JSON:   2,
+			},
+		},
 	}
 
 }

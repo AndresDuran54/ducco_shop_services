@@ -131,6 +131,7 @@ func (o Handler) CustomersNew(c echo.Context, itemsCustomer interface{}) error {
 	sessionResult := sessionsData.NewItemDB(sessions.NewItemDBIn{
 		NewItemDBInData: sessions.Sessions{
 			CustomerId:   customer.CustomerId,
+			Status:       &config.Etc.Sessions.SessionsStatus.Active,
 			Token:        &token,
 			ExpTimestamp: &expTime.TimeStamp,
 			InsTimestamp: &currentTime.TimeStamp,

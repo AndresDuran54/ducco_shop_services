@@ -2,7 +2,8 @@ package config
 
 type (
 	EtcInterface struct {
-		Orders Orders
+		Orders     Orders
+		Parameters Parameters
 	}
 
 	Orders struct {
@@ -15,5 +16,15 @@ type (
 		Delivered uint8
 		Error     uint8
 		Pending   uint8
+	}
+
+	Parameters struct {
+		ParametersTypes ParametersTypes
+	}
+
+	ParametersTypes struct {
+		Number uint8
+		String uint8
+		JSON   uint8
 	}
 )
