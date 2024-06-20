@@ -6,5 +6,5 @@ import (
 
 type ParameterItem struct {
 	router.HeadersCredentials
-	ParamId *string `json:"paramId"`
+	ParamId *string `param:"id"`
 }

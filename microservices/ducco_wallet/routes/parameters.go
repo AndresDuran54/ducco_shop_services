@@ -18,7 +18,7 @@ func loadRoutesParameters(e *echo.Echo) {
 	handler := handler.Handler{}
 
 	//+ Obtener el registro de un parámetro
-	e.GET(prefix, func(c echo.Context) error {
+	e.GET(prefix+"/:id", func(c echo.Context) error {
 		return guards.Request(guards.RequestIn[bind.ParameterItem]{
 			RequestDataIn: guards.RequestDataIn{
 				C: c,
