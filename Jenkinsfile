@@ -19,9 +19,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t andresduran54/$deploy_service:$image_version -f ./@deploy/@micros/$deploy_service/Dockerfile .'
+                sh 'docker build -t andresduran54/$deploy_service:$img_v -f ./@deploy/@micros/$deploy_service/Dockerfile .'
                 sh 'docker push andresduran54/$deploy_service'
-                sh 'kubectl set image deployment/$deploy $deploy_container=$deploy_service:$image_version --record=true'
+                sh 'kubectl set image deployment/$deploy $deploy_container=$deploy_service:$img_v --record=true'
             }
         }
     }
