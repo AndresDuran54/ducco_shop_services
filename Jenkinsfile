@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'echo "Approved test!"'
+                sh 'echo "Approved test"'
             }
         }
 
