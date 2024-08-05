@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'docker start $(docker ps -qa)'
+                sh 'docker build -t ducco_wallet:v1 -f ./@deploy/@micros/ducco_wallet'
             }
         }
     }
