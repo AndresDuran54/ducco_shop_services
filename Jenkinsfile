@@ -7,7 +7,7 @@ pipeline {
         deploy_service = 'ducco_products'
         deploy = 'dc-deploy-products'
         deploy_container = 'dc-products'
-        image_version = 'v8'
+        img_v = 'v8'
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh 'docker build -t andresduran54/$deploy_service:$image_version -f ./@deploy/@micros/$deploy_service/Dockerfile .'
                 sh 'docker push andresduran54/$deploy_service'
-                sh 'kubectl set image deployment/$dc-deploy-products deploy_container=$deploy_service:$image_version --record=true'
+                sh 'kubectl set image deployment/$deploy $deploy_container=$deploy_service:$image_version --record=true'
             }
         }
     }
