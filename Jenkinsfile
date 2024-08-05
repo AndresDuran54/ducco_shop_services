@@ -3,6 +3,10 @@ pipeline {
         label 'kubernetes'
     }
 
+    environment {
+        service = 'ducco_products'
+    }
+
     stages {
         stage('Test') {
             steps {
@@ -12,8 +16,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "docker build -t andresduran54/ducco_wallet -f ./@deploy/@micros/ducco_wallet/Dockerfile ."
-                sh 'docker push andresduran54/ducco_wallet'
+                sh 'docker build -t andresduran54/$(service) -f ./@deploy/@micros/$(service)/Dockerfile .'
+                sh 'docker push andresduran54/$(service)'
             }
         }
     }
