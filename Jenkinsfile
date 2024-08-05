@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'echo "$(docker ps -a)"'
+                sh 'docker ps -a'
             }
         }
     }
