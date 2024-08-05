@@ -16,9 +16,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                // sh 'docker build -t andresduran54/$deploy_service -f ./@deploy/@micros/$deploy_service/Dockerfile .'
-                // sh 'docker push andresduran54/$deploy_service'
-                sh 'kubectl get deploy'
+                sh 'docker build -t andresduran54/$deploy_service:v6 -f ./@deploy/@micros/$deploy_service/Dockerfile .'
+                sh 'docker push andresduran54/$deploy_service'
+                sh 'kubectl set image deployment/dc-deploy-products dc-products=$deploy_service:v6'
             }
         }
     }
