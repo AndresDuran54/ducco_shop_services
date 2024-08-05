@@ -8,8 +8,8 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'tree'
-                sh 'docker build -t ducco_wallet:v3 -f ./@deploy/@micros/ducco_wallet/Dockerfile .'
-                sh 'docker push ducco_wallet:v3'
+                sh 'docker build -t andresduran54/ducco_wallet:v4 -f ./@deploy/@micros/ducco_wallet/Dockerfile .'
+                sh 'docker push andresduran54/ducco_wallet:v4'
             }
         }
     }
