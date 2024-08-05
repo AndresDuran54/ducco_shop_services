@@ -33,13 +33,13 @@ func (o Data) ItemDB(itemDBIn ItemDBIn) database.ItemDBOut {
 	}
 
 	//+ Obtenemos el registro del cliente
-	sessionResult := lib.MYSQL.ItemDB(database.ItemDBIn{
+	orderResult := lib.MYSQL.ItemDB(database.ItemDBIn{
 		Item:       &Order{},
 		TableName:  TableName,
 		BuildWhere: buildWhere,
 	})
 
-	return sessionResult
+	return orderResult
 }
 
 func (o Data) NewItemDB(newItemDBIn NewItemDBIn) database.NewItemDBOut {

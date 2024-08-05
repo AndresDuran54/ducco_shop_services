@@ -10,15 +10,20 @@ type OrderDetail struct {
 
 type BuildWhere struct {
 	OrderDetailId *uint32 `db:"orderDetailId" pattern:"="`
-	Token         *string `db:"token" pattern:"="`
+	OrderId       *uint32 `db:"orderId" pattern:"="`
 }
 
 //+ ITEM
 type ItemDBIn struct {
 	OrderDetailId *uint32
-	Token         *string
 	Label         string
 	Trace         string
+}
+
+type ItemsDBIn struct {
+	OrderId *uint32
+	Label   string
+	Trace   string
 }
 
 //+ NEW ITEM

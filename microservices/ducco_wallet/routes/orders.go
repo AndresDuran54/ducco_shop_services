@@ -30,4 +30,18 @@ func loadRoutesOrders(e *echo.Echo) {
 			HandlerFunc: handler.OrdersNewItem,
 		})
 	})
+
+	//+ Obtener la información de la orden
+	e.GET(prefix+"/:id", func(c echo.Context) error {
+		return guards.Request(guards.RequestIn[bind.OrdersGetItem]{
+			RequestDataIn: guards.RequestDataIn{
+				C: c,
+			},
+			RequestData: &bind.OrdersGetItem{},
+			CheckGuard:  true,
+			GuardFunc:   guards.CheckCustomerSession,
+			BindFunc:    lib.Bind{}.Bind,
+			HandlerFunc: handler.OrdersGetItem,
+		})
+	})
 }

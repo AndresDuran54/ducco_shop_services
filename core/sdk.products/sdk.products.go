@@ -4,8 +4,6 @@ import (
 	"ducco/core/conflicts"
 	"ducco/core/network"
 	"ducco/core/utils"
-	"ducco/microservices/ducco_products/repository/products"
-	"fmt"
 )
 
 type SDKProducts struct {
@@ -43,10 +41,6 @@ func (o *SDKProducts) ProductsSearchItem(data ProductsSearchItemDataIn) Products
 		Data: data,
 	})
 
-	fmt.Println("response.Data")
-	fmt.Println(response.Data)
-	fmt.Println("response.Data")
-
 	if !response.Success {
 		conflicts.InternalServerError(conflicts.InternalServerErrorData{
 			MessageId: conflicts.ERR_INTERNAL_SERVER_ERROR.MessageId,
@@ -58,7 +52,7 @@ func (o *SDKProducts) ProductsSearchItem(data ProductsSearchItemDataIn) Products
 	utilsMap := utils.UtilsMap{}
 
 	//+ Objeto para almacenar el products
-	var product products.Product
+	var product Product
 
 	//+ Parseamos el customer
 	productsMap := response.Data["data"].(map[string]interface{})["item"]

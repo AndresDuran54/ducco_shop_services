@@ -22,3 +22,8 @@ type OrdersNewItemAddress struct {
 	FloorApartment *string `json:"floorApartment"`
 	Reference      *string `json:"reference"`
 }
+
+type OrdersGetItem struct {
+	router.HeadersCredentials
+	OrderId *uint32 `param:"id"`
+}

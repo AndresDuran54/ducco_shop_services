@@ -30,7 +30,6 @@ func (o Data) ItemDB(itemDBIn ItemDBIn) database.ItemDBOut {
 	//+ Construcción del where
 	buildWhere := BuildWhere{
 		OrderDetailId: itemDBIn.OrderDetailId,
-		Token:         itemDBIn.Token,
 	}
 
 	//+ Obtenemos el registro del cliente
@@ -41,6 +40,22 @@ func (o Data) ItemDB(itemDBIn ItemDBIn) database.ItemDBOut {
 	})
 
 	return sessionResult
+}
+
+func (o Data) ItemsDB(itemsDBIn ItemsDBIn) database.ItemsDBOut {
+	//+ Construcción del where
+	buildWhere := BuildWhere{
+		OrderId: itemsDBIn.OrderId,
+	}
+
+	//+ Obtenemos el registro del cliente
+	orderDetailsResult := lib.MYSQL.ItemsDB(database.ItemsDBIn{
+		Items:      []OrderDetail{},
+		TableName:  TableName,
+		BuildWhere: buildWhere,
+	})
+
+	return orderDetailsResult
 }
 
 func (o Data) NewItemDB(newItemDBIn NewItemDBIn) database.NewItemDBOut {
