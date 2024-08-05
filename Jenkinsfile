@@ -5,6 +5,9 @@ pipeline {
 
     environment {
         deploy_service = 'ducco_products'
+        deploy = 'dc-deploy-products'
+        deploy_container = 'dc-products'
+        image_version = 'v8'
     }
 
     stages {
@@ -16,9 +19,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t andresduran54/$deploy_service:v7 -f ./@deploy/@micros/$deploy_service/Dockerfile .'
+                sh 'docker build -t andresduran54/$deploy_service:$image_version -f ./@deploy/@micros/$deploy_service/Dockerfile .'
                 sh 'docker push andresduran54/$deploy_service'
-                sh 'kubectl set image deployment/dc-deploy-products dc-products=$deploy_service:v7 --record=true'
+                sh 'kubectl set image deployment/$dc-deploy-products deploy_container=$deploy_service:$image_version --record=true'
             }
         }
     }
