@@ -4,7 +4,7 @@ pipeline {
     }
 
     environment {
-        service = 'ducco_products'
+        deploy_service = 'ducco_products'
     }
 
     stages {
@@ -16,9 +16,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'echo $service'
-                sh 'docker build -t andresduran54/$service -f ./@deploy/@micros/$service/Dockerfile .'
-                sh 'docker push andresduran54/$service'
+                // sh 'docker build -t andresduran54/$deploy_service -f ./@deploy/@micros/$deploy_service/Dockerfile .'
+                // sh 'docker push andresduran54/$deploy_service'
+                sh 'kubectl get deploy'
             }
         }
     }
