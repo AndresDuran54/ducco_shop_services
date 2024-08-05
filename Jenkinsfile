@@ -8,7 +8,7 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'tree'
-                sh 'docker build -t ducco_wallet:v2 ./@deploy/@micros/ducco_wallet'
+                sh 'docker build -t ducco_wallet:v2 -f ./@deploy/@micros/ducco_wallet/Dockerfile .'
             }
         }
     }

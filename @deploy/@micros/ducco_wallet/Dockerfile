@@ -1,7 +1,7 @@
 FROM    golang:alpine3.19 AS dependencies
 RUN     mkdir -p /ducco/source-code
-COPY    ./../../../go.mod /ducco/source-code
-COPY    ./../../../go.mod /ducco/source-code
+COPY    ./go.mod /ducco/source-code
+COPY    ./go.mod /ducco/source-code
 WORKDIR /ducco/source-code
 RUN     go mod download
 
