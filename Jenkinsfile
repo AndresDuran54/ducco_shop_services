@@ -16,8 +16,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t andresduran54/$(service) -f ./@deploy/@micros/$(service)/Dockerfile .'
-                sh 'docker push andresduran54/$(service)'
+                sh 'echo $service'
+                // sh 'docker build -t andresduran54/$(service) -f ./@deploy/@micros/$(service)/Dockerfile .'
+                // sh 'docker push andresduran54/$(service)'
             }
         }
     }
