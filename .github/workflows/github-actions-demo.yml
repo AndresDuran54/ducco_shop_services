@@ -9,4 +9,5 @@ jobs:
       - run: ls -la
       - run: chmod 111 ./test.sh
       - run: ls -la
-      - run: /bin/bash ./test.sh
+      - run: echo "Soy el usuario $USER"
+      # - run: /bin/bash ./test.sh
