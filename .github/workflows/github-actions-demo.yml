@@ -8,4 +8,5 @@ jobs:
       - run: echo "Estoy en $(pwd)"
       - run: ls -la
       - run: chmod 111 ./test.sh
+      - run: ls -la
       # - run: ./test.sh
