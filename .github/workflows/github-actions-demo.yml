@@ -11,4 +11,4 @@ jobs:
       - run: chmod 111 ./test.sh
       - run: ls -la
       - run: echo "Soy el usuario $USER"
-      # - run: /bin/bash ./test.sh
+      - run: ./test.sh
