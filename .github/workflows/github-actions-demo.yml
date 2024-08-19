@@ -9,5 +9,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - run: chmod 111 ./test.sh
+      - run: ./test.sh
       - run: npm install -g bats
       - run: bats -v
