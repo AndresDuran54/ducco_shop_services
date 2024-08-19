@@ -7,5 +7,5 @@ jobs:
     steps:
       - run: echo "Estoy en $(pwd)"
       - run: ls -la
-      # - run: chmod 111 ./test.sh
+      - run: chmod 111 ./test.sh
       # - run: ./test.sh
