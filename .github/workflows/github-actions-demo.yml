@@ -13,3 +13,4 @@ jobs:
         env:
           SONAR_TOKEN: sqa_ed3afa3cc31bef2768ef5a8d2b63b0b31032846a
           SONAR_HOST_URL: https://t6q4wrsp-9000.brs.devtunnels.ms/
+          LC_ALL: "ru_RU.UTF-8"
