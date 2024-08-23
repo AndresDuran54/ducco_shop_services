@@ -5,6 +5,9 @@ jobs:
   test_sonarqube:
     runs-on: [self-hosted]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Analyze with Sonarqube
         uses: SonarSource/sonarqube-scan-action@v2.0.1
         env:
