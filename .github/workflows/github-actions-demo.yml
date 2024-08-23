@@ -12,3 +12,11 @@ jobs:
       - run: ls -la
       - run: echo "Soy el usuario -> $USER"
       - run: ./test.sh
+  test_sonarqube:
+    runs-on: [self-hosted]
+    steps:
+      - name: Analyze with Sonarqube
+        uses: SonarSource/sonarqube-scan-action@v2.0.1
+        env:
+          SONAR_HOST_TOKEN: squ_73e3d728321d90cef9bddd87b139a795626b29a9
+          SONAR_HOST_URL: http://localhost:9000
