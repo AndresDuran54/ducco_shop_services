@@ -9,4 +9,4 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v2.0.1
         env:
           SONAR_HOST_TOKEN: squ_73e3d728321d90cef9bddd87b139a795626b29a9
-          SONAR_HOST_URL: localhost:9000
+          SONAR_HOST_URL: https://t6q4wrsp-9000.brs.devtunnels.ms/
