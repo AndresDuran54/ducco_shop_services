@@ -41,11 +41,11 @@ func Request[T any](requestIn RequestIn[T]) error {
 				httpError = http.StatusUnauthorized
 				errorData = err
 			case "*runtime.TypeAssertionError":
-				err_ := err.(*runtime.TypeAssertionError)
+				errParse := err.(*runtime.TypeAssertionError)
 				errorData = conflicts.ErrorData{
 					Data: conflicts.ErrorConflicts{
 						MessageId: conflicts.ERR_INTERNAL_SERVER_ERROR.MessageId,
-						Message:   err_.Error(),
+						Message:   errParse.Error(),
 					},
 				}
 			case "conflicts.ConflictData":
