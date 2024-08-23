@@ -10,5 +10,5 @@ jobs:
       - run: ls -la
       - run: chmod 777 ./test.sh
       - run: ls -la
-      - run: echo "Soy el usuario $USER"
+      - run: echo "Soy el usuario -> $USER"
       - run: ./test.sh
