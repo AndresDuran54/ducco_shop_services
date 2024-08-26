@@ -29,6 +29,7 @@ jobs:
         run: |
           cd ./dist
           ls
+          ./app
           
 
       
