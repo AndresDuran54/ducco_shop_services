@@ -1,0 +1,17 @@
+name: Deployment
+
+concurrency: production
+
+on:
+    push: 
+        branches: 
+            - main
+
+jobs:
+    deployment:
+        runs-on: ubuntu-latest
+        environment: production
+        steps:
+            - name: deploy
+              run: ls
+            
