@@ -1,21 +1,21 @@
-nombre: Ir
+name: Go
 
-en: [push]
+on: [push]
 
-trabajos:
-  construir:
+jobs:
+  build:
 
-    se ejecuta en: ubuntu-latest
-    estrategia:
-      matriz:
-        versión go: [ '1.19', '1.20', '1.21.x' ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.19', '1.20', '1.21.x' ]
 
-    pasos:
-      - usos: acciones/checkout@v4
-      - nombre: Configurar Go ${{ matrix.go-version }}
-        usos: acciones/setup-go@v5
-        con:
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
           go-version: ${{ matrix.go-version }}
-      # Puede probar su matriz imprimiendo la versión actual de Go
-      - nombre: Mostrar la versión de Go
-        ejecutar: ir versión
+      # You can test your matrix by printing the current Go version
+      - name: Display Go version
+        run: go version
