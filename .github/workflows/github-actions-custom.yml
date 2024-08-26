@@ -22,7 +22,6 @@ jobs:
 
       - name: Compile microservice
         run: |
-          go get .
           cd ./microservices/ducco_products
           go build -v ./...
           ls
