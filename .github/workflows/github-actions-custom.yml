@@ -21,8 +21,11 @@ jobs:
         run: go version
 
       - name: Compile microservice
-        run: cd ./microservices/ducco_products
-        run: ls
+        run: |
+          go get .
+          cd ./microservices/ducco_products
+          go build -v ./...
+          ls
+          
       
-
       
