@@ -1,22 +1,21 @@
-name: learn-github-actions-2
-run-name: ${{ github.actor }} is learning GitHub Actions
+nombre: Ir
 
-on:
-  push: 
-    branches: 
-      - 'feature'
+en: [push]
 
-jobs:
-  hello_world_job:
-    # runs-on: [self-hosted]
-    runs-on: [ubuntu-lasted]
-    name: A job to say hello
-    steps:
-      - name: Hello world action step
-        id: hello
-        uses: ./.github/actions/hello-world-docker-action
-        with:
-          who-to-greet: 'Mona the Octocat2'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+trabajos:
+  construir:
+
+    se ejecuta en: ubuntu-latest
+    estrategia:
+      matriz:
+        versión go: [ '1.19', '1.20', '1.21.x' ]
+
+    pasos:
+      - usos: acciones/checkout@v4
+      - nombre: Configurar Go ${{ matrix.go-version }}
+        usos: acciones/setup-go@v5
+        con:
+          go-version: ${{ matrix.go-version }}
+      # Puede probar su matriz imprimiendo la versión actual de Go
+      - nombre: Mostrar la versión de Go
+        ejecutar: ir versión
