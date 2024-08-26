@@ -26,7 +26,9 @@ jobs:
           go build -v -o ./dist/app ./microservices/ducco_products/*.go
           
       - name: List directorys
-        run: ls
+        run: |
+          cd ./dist
+          ls
           
 
       
