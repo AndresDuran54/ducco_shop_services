@@ -22,9 +22,13 @@ jobs:
 
       - name: Compile microservice
         run: |
-          cd ./microservices/ducco_products
-          go build -v ./...
-          ls
+          go mod download
+          go build -v -o ./dist/app ./microservices/ducco_products/*.go
           
+      - name: List directorys
+        run: ls
+          
+
+      
       
       
