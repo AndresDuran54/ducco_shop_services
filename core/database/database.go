@@ -13,7 +13,7 @@ const (
 	MONGO_DB
 )
 
-//+ PATTERNS
+// + PATTERNS
 const (
 	EqualPattern              string = `=`
 	NotEqualPattern           string = `!=`
@@ -24,6 +24,7 @@ const (
 	GreaterThanOrEqualPattern string = `>=`
 	LessThanPattern           string = `<`
 	LessThanOrEqualPattern    string = `<=`
+	JsonArraySearchPattern    string = `ARRAY_SEARCH`
 )
 
 type IDatabase interface {
@@ -111,7 +112,7 @@ type UpdateItemsDBDataOut struct {
 	Item interface{} `json:"item"`
 }
 
-//+ +++++++++ UpdateItemDB +++++++++
+// + +++++++++ UpdateItemDB +++++++++
 type UpdateItemDBIn struct {
 	Data       interface{}
 	BuildWhere interface{}

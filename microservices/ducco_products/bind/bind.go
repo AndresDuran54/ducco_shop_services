@@ -2,12 +2,17 @@ package bind
 
 import "ducco/core/router"
 
-//+ CUSTOMER
+// + CUSTOMER
 type ItemsCustomer struct {
 	router.HeadersCredentialsFiltersPagingOrder
 }
 
-//+ INTERSERVICES
+type ItemCustomer struct {
+	router.HeadersCredentials
+	ProductId *uint32 `param:"id"`
+}
+
+// + INTERSERVICES
 type ProductInterSVC struct {
 	router.HeadersCredentialsInterSVC
 	ProductId *uint32 `json:"productId"`

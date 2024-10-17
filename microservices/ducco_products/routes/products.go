@@ -4,6 +4,7 @@ import (
 	"ducco/microservices/ducco_products/bind"
 	c "ducco/microservices/ducco_products/config"
 	handler "ducco/microservices/ducco_products/controller/products"
+	"ducco/microservices/ducco_products/guards"
 	"ducco/microservices/ducco_products/lib"
 
 	"github.com/labstack/echo/v4"
@@ -16,12 +17,25 @@ func loadRoutesProducts(e *echo.Echo) {
 	//+ Handler
 	handler := handler.Handler{}
 
+	//+ FO
 	e.GET(prefix, func(c echo.Context) error {
 		return Request(RequestIn[bind.ItemsCustomer]{
 			c:           c,
 			requestData: &bind.ItemsCustomer{},
 			bindFunc:    lib.Bind{}.Bind,
 			handlerFunc: handler.ItemsCustomer,
+		})
+	})
+
+	e.GET(prefix+"/:id", func(c echo.Context) error {
+		return guards.Request(guards.RequestIn[bind.ItemCustomer]{
+			RequestDataIn: guards.RequestDataIn{
+				C: c,
+			},
+			RequestData: &bind.ItemCustomer{},
+			CheckGuard:  false,
+			BindFunc:    lib.Bind{}.Bind,
+			HandlerFunc: handler.ItemCustomer,
 		})
 	})
 

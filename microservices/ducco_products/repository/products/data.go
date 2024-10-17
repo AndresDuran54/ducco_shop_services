@@ -30,6 +30,10 @@ func Filters() map[string]database.Filter {
 			Column:  "inventoryPrice",
 			Pattern: database.BetweenPattern,
 		},
+		"keywordsSearchJsonSearch": {
+			Column:  "keywordsSearch",
+			Pattern: database.JsonArraySearchPattern,
+		},
 	}
 }
 

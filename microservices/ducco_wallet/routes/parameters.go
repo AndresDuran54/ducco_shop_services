@@ -24,7 +24,7 @@ func loadRoutesParameters(e *echo.Echo) {
 				C: c,
 			},
 			RequestData: &bind.ParameterItem{},
-			CheckGuard:  true,
+			CheckGuard:  false,
 			GuardFunc:   guards.CheckCustomerSession,
 			BindFunc:    lib.Bind{}.Bind,
 			HandlerFunc: handler.ParameterItemDB,

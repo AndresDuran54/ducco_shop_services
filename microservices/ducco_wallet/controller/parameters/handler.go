@@ -5,7 +5,6 @@ import (
 	"ducco/microservices/ducco_wallet/bind"
 	"ducco/microservices/ducco_wallet/guards"
 	"ducco/microservices/ducco_wallet/repository/parameters"
-	"fmt"
 	"net/http"
 )
 
@@ -25,7 +24,6 @@ func (o Handler) ParameterItemDB(c guards.RequestDataIn, parameterItemData inter
 	})
 
 	if !parameterResult.Data.ItemFound {
-		fmt.Println("AAA")
 		conflicts.Conflict(conflicts.ConflictData{
 			MessageId: conflicts.ERR_PARAMETER_NOT_FOUND.MessageId,
 			Message:   conflicts.ERR_PARAMETER_NOT_FOUND.Message,

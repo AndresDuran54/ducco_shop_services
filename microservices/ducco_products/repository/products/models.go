@@ -14,6 +14,7 @@ type Product struct {
 	DetailImagesUrlsFO     *string `gorm:"column:detailImagesUrlsFO" json:"detailImagesUrlsFO"`
 	DetailDescriptionFO    *string `gorm:"column:detailDescriptionFO" json:"detailDescriptionFO"`
 	DetailDocIdFO          *string `gorm:"column:detailDocIdFO" json:"detailDocIdFO"`
+	DetailFeaturesFO       *string `gorm:"column:detailFeaturesFO" json:"detailFeaturesFO"`
 	InventoryStock         *uint32 `gorm:"column:inventoryStock" json:"inventoryStock"`
 	InventorySalesQuantity *uint32 `gorm:"column:inventorySalesQuantity" json:"inventorySalesQuantity"`
 	InventoryPrice         *uint32 `gorm:"column:inventoryPrice" json:"inventoryPrice"`

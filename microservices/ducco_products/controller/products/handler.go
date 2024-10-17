@@ -5,6 +5,7 @@ import (
 
 	"ducco/core/conflicts"
 	"ducco/microservices/ducco_products/bind"
+	"ducco/microservices/ducco_products/guards"
 	"ducco/microservices/ducco_products/repository/products"
 
 	"github.com/labstack/echo/v4"
@@ -12,6 +13,7 @@ import (
 
 type Handler struct{}
 
+// + FO
 func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error {
 	//+ Obtenemos la data de la consulta
 	data := itemsCustomer.(*bind.ItemsCustomer)
@@ -32,7 +34,32 @@ func (o Handler) ItemsCustomer(c echo.Context, itemsCustomer interface{}) error 
 	return c.JSON(http.StatusOK, productsResultDB)
 }
 
-//+ INTERSERVICES
+func (o Handler) ItemCustomer(c guards.RequestDataIn, OrdersGetItemData interface{}) error {
+	//+ Obtenemos la data de la consulta
+	data := OrdersGetItemData.(*bind.ItemCustomer)
+
+	//+ Instancia del repository de los productos
+	productsData := products.Data{}
+
+	//+ Obtenemos el registro del producto
+	productResultDB := productsData.ItemDB(products.ItemDBIn{
+		ProductId: data.ProductId,
+	})
+
+	//+ Verificamos si existe o no el producto
+	if !productResultDB.Data.ItemFound {
+		conflicts.Conflict(conflicts.ConflictData{
+			MessageId: conflicts.ERR_PRODUCT_NOT_FOUND.MessageId,
+			Message:   conflicts.ERR_PRODUCT_NOT_FOUND.Message,
+		})
+	}
+
+	//+ Pipe
+	productResultDB.Data.Item = ItemCustomer(productResultDB.Data.Item.(*products.Product))
+	return c.C.JSON(http.StatusOK, productResultDB)
+}
+
+// + INTERSERVICES
 func (o Handler) ProductInterSVC(c echo.Context, productData interface{}) error {
 	//+ Obtenemos la data de la consulta
 	data := productData.(*bind.ProductInterSVC)
