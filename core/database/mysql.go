@@ -319,7 +319,6 @@ func (o *MYSQL) BuildFilters(filters map[string]Filter, filtersVals string) (str
 		return "", []interface{}{}
 	}
 
-	fmt.Println(filtersArray)
 	for _, filter := range filtersArray {
 
 		//+ Si no existe el filtro saltamos la iteración
@@ -403,23 +402,16 @@ func (o *MYSQL) BuildFilters(filters map[string]Filter, filtersVals string) (str
 			//+ Crear un slice para almacenar los valores
 			var val []string
 
-			//+ Agregamos el primer parentesís
-			val = append(val, "(")
-
 			//+ Iterar sobre el map y agregar los valores al slice
 			for _, value := range values {
-				fmt.Println(value)
-				val = append(val, fmt.Sprintf("JSON_CONTAINS(%v, '\"?\"')", filters[filter.Filter].Column))
+				val = append(val, fmt.Sprintf("JSON_CONTAINS(%v, ?)", filters[filter.Filter].Column))
 
 				//+ Agregamos el valor de la sentencia
-				whereStatementValues = append(whereStatementValues, val)
+				whereStatementValues = append(whereStatementValues, "\""+value+"\"")
 			}
 
-			//+ Agregamos el último parentesis
-			val = append(val, ")")
-
 			//+ Agregamos la sentencia where
-			whereStatement = append(whereStatement, strings.Join(val, " OR "))
+			whereStatement = append(whereStatement, "("+strings.Join(val, " OR ")+")")
 		}
 	}
 
