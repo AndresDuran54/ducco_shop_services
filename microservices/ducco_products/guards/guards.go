@@ -3,7 +3,6 @@ package guards
 import (
 	"ducco/core/conflicts"
 	sdk_customers "ducco/core/sdk.customers"
-	"fmt"
 
 	// "ducco/microservices/ducco_wallet/lib"
 	"net/http"
@@ -31,7 +30,6 @@ func Request[T any](requestIn RequestIn[T]) error {
 
 	defer func() error {
 		if err := recover(); err != nil {
-			fmt.Println(err)
 			//+ Error por defecto
 			httpError := http.StatusInternalServerError
 

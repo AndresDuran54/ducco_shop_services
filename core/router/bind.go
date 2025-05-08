@@ -15,17 +15,17 @@ type HeadersCredentialsInterSVC struct {
 }
 
 type HeadersCredentialsFiltersPaging struct {
-	CustomerId  *int    `header:"customer_id"`
+	CustomerId  *int    `header:"customer-id"`
 	Token       *string `header:"token"`
-	PagingIndex *int    `header:"paging_index"`
-	PagingSize  *int    `header:"paging_size"`
+	PagingIndex *int    `header:"paging-index"`
+	PagingSize  *int    `header:"paging-size"`
 	Filters     *string `header:"filters"`
 }
 
 type HeadersCredentialsFiltersPagingOrder struct {
 	Token       *string `header:"token"`
-	PagingIndex *int    `header:"paging_index"`
-	PagingSize  *int    `header:"paging_size"`
+	PagingIndex *int    `header:"paging-index"`
+	PagingSize  *int    `header:"paging-size"`
 	Filters     *string `header:"filters"`
 	Orders      *string `header:"orders"`
 }
