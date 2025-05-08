@@ -68,10 +68,36 @@ func (o Data) NewItemDB(newItemDBIn NewItemDBIn) database.NewItemDBOut {
 	})
 }
 
+func (o Data) UpdateItemDB(updateItemDBIn UpdateItemDBIn) database.UpdateItemDBOut {
+	lib.MYSQL.UpdateItemDB(database.UpdateItemDBIn{
+		Data: updateItemDBIn.Data,
+		BuildWhere: BuildWhere{
+			SessionId: updateItemDBIn.SessionId,
+		},
+		TableName: TableName,
+	})
+
+	//+ Obtenemos el registro de la sesión actualizada
+	sessionResult := lib.MYSQL.ItemDB(database.ItemDBIn{
+		Item:      &Sessions{},
+		TableName: TableName,
+		BuildWhere: BuildWhere{
+			SessionId: updateItemDBIn.SessionId,
+		},
+	})
+
+	return database.UpdateItemDBOut{
+		Data: database.UpdateItemDBDataOut{
+			Item: sessionResult.Data.Item,
+		},
+	}
+}
+
 func (o Data) UpdateItemsDB(updateItemsDBIn UpdateItemsDBIn) database.UpdateItemsDBOut {
 	return lib.MYSQL.UpdateItemsDB(database.UpdateItemsDBIn{
 		Data: updateItemsDBIn.Data,
 		BuildWhere: BuildWhere{
+			SessionId:  updateItemsDBIn.SessionId,
 			CustomerId: updateItemsDBIn.CustomerId,
 		},
 		TableName: TableName,

@@ -14,10 +14,24 @@ type SessionsLoginPipe struct {
 	Session  sessions.Sessions   `json:"item"`
 }
 
+type SessionsLogoutPipe struct {
+	Session sessions.Sessions `json:"item"`
+}
+
 func SessionsLogin(customer customers.Customers, session sessions.Sessions) ResponsePipe {
 	sessionsPipe := SessionsLoginPipe{
 		Customer: customer,
 		Session:  session,
+	}
+
+	return ResponsePipe{
+		Data: sessionsPipe,
+	}
+}
+
+func SessionsLogout(session sessions.Sessions) ResponsePipe {
+	sessionsPipe := SessionsLogoutPipe{
+		Session: session,
 	}
 
 	return ResponsePipe{

@@ -33,7 +33,7 @@ func NewSDKCustomers(host string, apiKey string) SDKCustomers {
 	}
 }
 
-//+ CUSTOMERS
+// + CUSTOMERS
 func (o *SDKCustomers) CustomersSearchItem(data CustomersSearchItemDataIn) CustomersSearchItemDataOut {
 
 	//+ Realizamos la solicitud HTTP
@@ -57,7 +57,7 @@ func (o *SDKCustomers) CustomersSearchItem(data CustomersSearchItemDataIn) Custo
 	}
 }
 
-//+ SESSIONS
+// + SESSIONS
 func (o *SDKCustomers) SessionsCustomerValidate(data SessionsCustomerValidateDataIn) SessionsCustomerValidateDataOut {
 
 	//+ Realizamos la solicitud HTTP

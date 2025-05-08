@@ -10,11 +10,12 @@ type Sessions struct {
 }
 
 type BuildWhere struct {
+	SessionId  *uint32 `db:"sessionId" pattern:"="`
 	CustomerId *uint32 `db:"customerId" pattern:"="`
 	Token      *string `db:"token" pattern:"="`
 }
 
-//+ ITEMS
+// + ITEMS
 type ItemsDBIn struct {
 	OrderCol     *string
 	Order        *string
@@ -27,23 +28,33 @@ type ItemsDBIn struct {
 	Trace        string
 }
 
-//+ ITEM
+// + ITEM
 type ItemDBIn struct {
+	SessionId  *uint32
 	CustomerId *uint32
 	Token      *string
 	Label      string
 	Trace      string
 }
 
-//+ NEW ITEM
+// + NEW ITEM
 type NewItemDBIn struct {
 	NewItemDBInData Sessions
 	Label           *string
 	Trace           *string
 }
 
-//+ UPDATE ITEM
+// + UPDATE ITEM
 type UpdateItemsDBIn struct {
+	SessionId  *uint32
+	CustomerId *uint32
+	Data       Sessions
+	Label      *string
+	Trace      *string
+}
+
+type UpdateItemDBIn struct {
+	SessionId  *uint32
 	CustomerId *uint32
 	Data       Sessions
 	Label      *string

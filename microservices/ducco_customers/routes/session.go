@@ -4,6 +4,7 @@ import (
 	"ducco/microservices/ducco_customers/bind"
 	c "ducco/microservices/ducco_customers/config"
 	handler "ducco/microservices/ducco_customers/controller/sessions"
+	"ducco/microservices/ducco_customers/guards"
 	"ducco/microservices/ducco_customers/lib"
 
 	"github.com/labstack/echo/v4"
@@ -33,6 +34,20 @@ func loadRoutesSession(e *echo.Echo) {
 			requestData: &bind.SessionsTokenInfo{},
 			bindFunc:    lib.Bind{}.Bind,
 			handlerFunc: handler.SessionsTokenInfo,
+		})
+	})
+
+	//+ Cerrar sesión
+	e.POST(prefix+"/logout", func(c echo.Context) error {
+		return guards.Request(guards.RequestIn[bind.SessionsLogout]{
+			RequestDataIn: guards.RequestDataIn{
+				C: c,
+			},
+			RequestData: &bind.SessionsLogout{},
+			CheckGuard:  true,
+			BindFunc:    lib.Bind{}.Bind,
+			HandlerFunc: handler.SessionsLogout,
+			GuardFunc:   guards.CheckCustomerSession,
 		})
 	})
 

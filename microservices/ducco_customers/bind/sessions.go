@@ -9,7 +9,10 @@ type SessionsTokenInfo struct {
 	Token *string `header:"token"`
 }
 
-//+ INTERSERVICES
+type SessionsLogout struct {
+}
+
+// + INTERSERVICES
 type SessionsCustomerValidateInterSVC struct {
 	Token *string `header:"token"`
 }

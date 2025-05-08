@@ -7,6 +7,7 @@ import (
 	"ducco/core/utils"
 	"ducco/microservices/ducco_customers/bind"
 	"ducco/microservices/ducco_customers/config"
+	"ducco/microservices/ducco_customers/guards"
 	"ducco/microservices/ducco_customers/repository/customers"
 	"ducco/microservices/ducco_customers/repository/sessions"
 
@@ -154,7 +155,41 @@ func (o Handler) SessionsTokenInfo(c echo.Context, sessionTokenInfoData interfac
 	))
 }
 
-//+ INTERSERVICES
+func (o Handler) SessionsLogout(c guards.RequestDataIn, sessionLogoutData interface{}) error {
+
+	//+ Instancia del repository de los sessions
+	sessionsData := sessions.Data{}
+
+	//+ Obtenemos el registro de la sesión
+	sessionResult := sessionsData.ItemDB(sessions.ItemDBIn{
+		SessionId: c.SessionData.Session.SessionId,
+	})
+
+	if !sessionResult.Data.ItemFound {
+		conflicts.Conflict(conflicts.ConflictData{
+			MessageId: conflicts.ERR_SESSIONS_NOT_FOUND.MessageId,
+			Message:   conflicts.ERR_SESSIONS_NOT_FOUND.Message,
+		})
+	}
+
+	//+ Cerramos la sesión
+	sessionUpdateResult := sessionsData.UpdateItemDB(sessions.UpdateItemDBIn{
+		SessionId: c.SessionData.Session.SessionId,
+		Data: sessions.Sessions{
+			Status: &config.Etc.Sessions.SessionsStatus.Inactive,
+		},
+	})
+
+	//+ Registro de la sesión
+	session := sessionUpdateResult.Data.Item.(*sessions.Sessions)
+
+	//+ Pipe
+	return c.C.JSON(http.StatusOK, SessionsLogout(
+		*session,
+	))
+}
+
+// + INTERSERVICES
 func (o Handler) SessionsCustomerValidateInterSVC(c echo.Context, sessionValidateData interface{}) error {
 
 	//+ Obtenemos la data de la consulta
