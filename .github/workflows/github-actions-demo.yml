@@ -5,7 +5,7 @@ on:
   push:
     branches: [ ubuntu-latest ]
 jobs:
-  test_sonarqube:
+  prepare_env:
     runs-on: [ self-hosted ]
     steps:
       - name: Clone project
