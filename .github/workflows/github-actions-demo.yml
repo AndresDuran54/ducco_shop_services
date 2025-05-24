@@ -3,10 +3,10 @@ name: Deploy to AKS
 run-name: ${{ github.actor }}
 on: 
   push:
-    branches: [ ubuntu-latest ]
+    branches: [ main-gh-actions ]
 jobs:
   prepare_env:
-    runs-on: [ self-hosted ]
+    runs-on: [ ubuntu-latest ]
     steps:
       - name: Clone project
         uses: actions/checkout@v4
