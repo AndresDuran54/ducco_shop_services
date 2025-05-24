@@ -3,10 +3,10 @@ name: Deploy to AKS
 run-name: ${{ github.actor }}
 on: 
   push:
-    branches: [ main-gh-actions ]
+    branches: [ ubuntu-latest ]
 jobs:
   test_sonarqube:
-    runs-on: [self-hosted]
+    runs-on: [ self-hosted ]
     steps:
       - name: Clone project
         uses: actions/checkout@v4
