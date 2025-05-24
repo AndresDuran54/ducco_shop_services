@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compile microservice
-        run: pwd
+        run: docker build -t ducco_products ./@deploy/ducco_products/.
 
       - name: User
         run: id
