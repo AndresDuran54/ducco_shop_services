@@ -1,18 +1,12 @@
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning GitHub Actions
+name: Deploy to AKS
+
+run-name: ${{ github.actor }}
 on: 
   push:
-    branches: main
+    branches: [ main-gh-actions ]
 jobs:
   test_sonarqube:
     runs-on: [self-hosted]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Analyze with Sonarqube <*>
-        uses: SonarSource/sonarqube-scan-action@v2.0.1
-        env:
-          SONAR_TOKEN: sqa_ed3afa3cc31bef2768ef5a8d2b63b0b31032846a
-          SONAR_HOST_URL: https://t6q4wrsp-9000.brs.devtunnels.ms/
-          LC_ALL: "ru_RU.UTF-8"
+      - name: Clone project
+        uses: actions/checkout@v4
