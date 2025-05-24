@@ -13,3 +13,6 @@ jobs:
 
       - name: Compile microservice
         run: pwd
+
+      - name: User
+        run: id
