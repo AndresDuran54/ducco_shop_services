@@ -6,7 +6,10 @@ on:
     branches: [ main-gh-actions ]
 jobs:
   prepare_env:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted ]
     steps:
       - name: Clone project
         uses: actions/checkout@v4
+
+      - name: Compile microservice
+        run: pwd
