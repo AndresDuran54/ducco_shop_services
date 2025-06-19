@@ -1,0 +1,30 @@
+name: Build microservice image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: localhost
+
+    env:
+      microservice: products
+      img_v: v1
+
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Display Go version
+        run: go version
+
+      - name: Build image
+        run: docker build -t andresduran54/ducco_$microservice:$img_v -f ./@deploy/@micros/ducco_$microservice/Dockerfile .
+
+      - name: Publish image
+        run: docker push andresduran54/ducco_$microservice
+
+      - name: Update image on deployment
+        run: kubectl set image deployment/dc-deploy-$microservice dc-products-$microservice=ducco_$microservice:$img_v
